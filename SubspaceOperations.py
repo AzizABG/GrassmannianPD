@@ -54,35 +54,32 @@ def SumOfSpaces(basis_list):
   # This function returns a basis for the sum of W_1 + W_2 + ... + W_k
   #vertically stack and then row reduce
 
-def OrthComplement(A,B):
-  n = A.shape[0]
+def OrthComplement(A, B):
+    # Number of rows of A
+    n = A.shape[0]
     
     # Orthonormalize B (if B is empty, we treat Q_B as empty so every vector is in B⊥)
-  Q_B, _ = np.linalg.qr(B)
-  
-  # List to hold vectors from A that are orthogonal to B
-  intersection_vectors = []
-  
-  for i in range(A.shape[1]):
-      a = A[:, i]
-      # Project a onto the subspace spanned by B
-      a_proj = Q_B @ (Q_B.T @ a)
-      # Component of a orthogonal to B
-      a_perp = a - a_proj
-      a_perp[np.abs(a_perp) < THRESHOLD] = 0
-      # If the norm is above tolerance, keep it
-      if np.linalg.norm(a_perp) > THRESHOLD:
-          intersection_vectors.append(a_perp)
+    if B.shape[1] > 0:
+        Q_B, _ = np.linalg.qr(B)
+    else:
+        Q_B = np.empty((n, 0))  # Empty B implies every vector is in B⊥
 
-  if not intersection_vectors:
-      # Return an empty array if no nonzero vectors remain
-      return np.empty((n, 0))
-  
-  # Stack the intersection vectors as columns
-  X = np.column_stack(intersection_vectors)
-  # Optionally, orthonormalize the result for a clean basis
-  Q, _ = np.linalg.qr(X)
-  return Q
+    # Orthonormalize the entire span of A (considering A as a set of vectors)
+    if A.shape[1] > 0:
+        Q_A, _ = np.linalg.qr(A)
+    else:
+        Q_A = np.empty((n, 0))  # Empty A implies we return the whole space
+
+    # Combine Q_B and Q_A to form a combined orthonormal basis
+    Q_combined = np.hstack((Q_B, Q_A))
+
+    # Perform QR decomposition on the combined matrix to get an orthonormal basis of the combined span
+    Q_combined, _ = np.linalg.qr(Q_combined)
+
+    # Now the orthogonal complement to B and A will be the remaining part in the orthonormalized space
+    Q_complement = Q_combined[:, Q_B.shape[1]:]
+
+    return Q_complement
 
 
 def test_OrthComplement():
@@ -91,7 +88,7 @@ def test_OrthComplement():
                   [0, 0, 1]], dtype=float).T  # 3 vectors in ℝ³
 
     B = np.array([[1, 0, 0],
-              [0, 1, 0]], dtype=float).T  # shape: (3, 2)
+              [0, 1, 0], ], dtype=float).T  # shape: (3, 2)
 
     # Compute the orthogonal complement of span(A) relative to span(B)
     Q = OrthComplement(A, B)
