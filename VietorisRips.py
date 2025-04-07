@@ -3,4 +3,4 @@ def vietoris_rips(D, epsilon, k_max):
 
 
 def boundary_maxrix(simplices_k, simplices_k_minus_1):
-  #This function constructs the real-valued (numoy) boundary matrix from (k)-simplices to (k-1)-simplices.
+  #This function constructs the real-valued (numpy) boundary matrix from (k)-simplices to (k-1)-simplices.
