@@ -29,6 +29,12 @@ def IntersectionOfSpaces(B_1, B_2):
     
     return intersection_vectors
 
+
+
+
+
+
+
   # B_1 and B_2 are basis for two subspaces (of R^n): W_1 and W_2 
   # They are given as 2D numpy arrays (columns of the arrays form the basis)
   # This function returns a basis for the intersection of W_1 and W_2
