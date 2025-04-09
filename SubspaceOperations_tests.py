@@ -1,4 +1,4 @@
-from SubspaceOperations import IntersectionOfSpaces, THRESHOLD
+from SubspaceOperations import IntersectionOfSpaces, SumOfSpaces, OrthComplement, THRESHOLD
 
 import numpy as np
 from scipy.linalg import null_space
@@ -156,3 +156,74 @@ def Intersection_tests():
 
 
 Intersection_tests()
+
+def Sum_tests():
+    # Test 1: Sum of two orthogonal vectors in R^2 should span the full space
+    B1 = np.array([[1.0, 0.0]])
+    B2 = np.array([[0.0, 1.0]])
+    combined = np.stack([B1, B2], axis=0)
+    result = SumOfSpaces(combined)
+    assert result.shape[0] == 2, "Test 1 Failed: Should span R^2."
+    assert np.linalg.matrix_rank(result) == 2, "Test 1 Failed: Rank should be 2."
+    print("Test 1 passed: Sum of orthogonal bases in R^2 spans full space.")
+
+    # Test 2: Sum of linearly dependent vectors should collapse to single direction
+    v = np.array([[1.0, 2.0]])
+    B1 = np.copy(v)
+    B2 = 2 * v
+    combined = np.stack([B1, B2], axis=0)
+    result = SumOfSpaces(combined)
+    assert np.linalg.matrix_rank(result) == 1, "Test 2 Failed: Rank should be 1."
+    print("Test 2 passed: Linearly dependent vectors handled correctly.")
+
+    # Test 3: Sum of three orthogonal vectors in R^3 → full space
+    B1 = np.array([[1, 0, 0]])
+    B2 = np.array([[0, 1, 0]])
+    B3 = np.array([[0, 0, 1]])
+    combined = np.stack([B1, B2, B3], axis=0)
+    result = SumOfSpaces(combined)
+    assert result.shape[1] == 3, "Test 3 Failed: Should span R^3."
+    print("Test 3 passed: Sum of orthogonal vectors spans R^3.")
+
+    # Test 4: Empty basis input
+    combined = np.empty((0, 3))
+    result = SumOfSpaces(combined)
+    assert result.size == 0, "Test 4 Failed: Sum of empty basis should be empty."
+    print("Test 4 passed: Empty input handled.")
+
+Sum_tests()
+
+
+def Orth_tests():
+    # Test 1: A ⊥ B in R^3
+    A = np.array([[0.0, 0.0, 1.0]]).T
+    B = np.array([[1.0, 0.0, 0.0],
+                  [0.0, 1.0, 0.0]]).T
+    Q = OrthComplement(A, B)
+    assert Q.shape[1] == 1, "Test 1 Failed: Expected 1 vector in orthogonal complement."
+    assert np.allclose(Q.T @ B, 0, atol=THRESHOLD), "Test 1 Failed: Result not orthogonal to B."
+    print("Test 1 passed: Orthogonal complement of A relative to B is correct.")
+
+    # Test 2: B is empty → result = A
+    A = np.eye(3)
+    B = np.empty((3, 0))
+    Q = OrthComplement(A, B)
+    assert Q.shape == (3, 3), "Test 2 Failed: Should return full A basis."
+    print("Test 2 passed: Empty B returns full A.")
+
+    # Test 3: A is empty → return nothing (or full orthogonal complement of B)
+    A = np.empty((3, 0))
+    B = np.eye(3)
+    Q = OrthComplement(A, B)
+    assert Q.shape[1] == 0, "Test 3 Failed: A is empty, result should be empty."
+    print("Test 3 passed: Empty A handled.")
+
+    # Test 4: A already orthogonal to B
+    A = np.array([[0, 0, 1]]).T
+    B = np.array([[1, 0, 0], [0, 1, 0]]).T
+    Q = OrthComplement(A, B)
+    assert np.allclose(Q.T @ B, 0, atol=THRESHOLD), "Test 4 Failed: Should still be orthogonal."
+    print("Test 4 passed: A already orthogonal to B.")
+
+Orth_tests()
+
