@@ -8,8 +8,8 @@ def VR_test():
     x = np.array([[0, 2, 3], 
                  [2, 0, 4],
                  [3, 4, 0]])
-    epsilon = 2
-    k = 0
+    epsilon = 4
+    k = 3
 
     print(vietoris_rips(x, epsilon, k))
 
