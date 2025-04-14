@@ -26,3 +26,24 @@ def VR_test():
     B2 = boundary_matrix(simplices_2, simplices_1)
     print(B2)
 VR_test()
+
+
+def VR_test2():
+    D = np.array([
+    [0,2,3,4],
+    [2,0,2,4],
+    [3,2,0,1],
+    [4,4,1,0]
+])
+    epsilon = 1.5
+    k = 3
+
+    rips_complex = vietoris_rips(D, epsilon, k)
+    print(rips_complex)
+    simplices_2 = rips_complex[1]
+    simplices_1 = rips_complex[0]
+
+# Call the boundary matrix function
+    B2 = boundary_matrix(simplices_2, simplices_1)
+    print(B2)
+VR_test2()
