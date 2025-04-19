@@ -52,7 +52,7 @@ def boundary_matrix(simplices_k, simplices_k_minus_1):
     Constructs the real-valued boundary matrix from k-simplices to (k-1)-simplices.
     """
     # Mapping from simplex to index for (k-1)-simplices
-    index_map = {tuple(sorted(s)): i for i, s in enumerate(simplices_k_minus_1)}
+    index_map = {tuple(s): i for i, s in enumerate(simplices_k_minus_1)}
     n_rows = len(simplices_k_minus_1)
     n_cols = len(simplices_k)
 
