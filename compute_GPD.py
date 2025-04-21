@@ -15,8 +15,8 @@ def computeGPD(D, k, l, r, lminus, rminus):
     #ZB(l, r)
 
     cycles = boundary_matrix(ldict[k], ldict[k-1])
-    cycles_padded = pad_matrix_to_match_tuples(cycles, ldict[k-1], rdict[k-1])
-    cycles_padded = pad_matrix_to_match_tuples(cycles_padded.T, ldict[k], rdict[k]).T
+    cycles_padded = pad_matrix(cycles, ldict[k-1], rdict[k-1])
+    cycles_padded = pad_matrix(cycles_padded.T, ldict[k], rdict[k]).T
     cycles = null_space(cycles_padded)
 
     boundries = boundary_matrix(rdict[k+1], rdict[k])
@@ -27,8 +27,8 @@ def computeGPD(D, k, l, r, lminus, rminus):
     #ZB(lminus, r)
 
     cycles = boundary_matrix(lminusdict[k], lminusdict[k-1])
-    cycles_padded = pad_matrix_to_match_tuples(cycles, lminusdict[k-1], rdict[k-1])
-    cycles_padded = pad_matrix_to_match_tuples(cycles_padded.T, lminusdict[k], rdict[k]).T
+    cycles_padded = pad_matrix(cycles, lminusdict[k-1], rdict[k-1])
+    cycles_padded = pad_matrix(cycles_padded.T, lminusdict[k], rdict[k]).T
     cycles = null_space(cycles)
 
     boundries = boundary_matrix(rdict[k+1], rdict[k])
@@ -39,24 +39,25 @@ def computeGPD(D, k, l, r, lminus, rminus):
     #ZB(l, rminus)
 
     cycles = boundary_matrix(ldict[k], ldict[k-1])
-    cycles_padded = pad_matrix_to_match_tuples(cycles, ldict[k-1], rdict[k-1])
-    cycles_padded = pad_matrix_to_match_tuples(cycles_padded.T, ldict[k], rdict[k]).T
+    cycles_padded = pad_matrix(cycles, ldict[k-1], rdict[k-1])
+    cycles_padded = pad_matrix(cycles_padded.T, ldict[k], rdict[k]).T
     cycles = null_space(cycles)
 
     boundries = boundary_matrix(rminusdict[k+1], rminusdict[k])
-    cycles_padded = pad_matrix_to_match_tuples(boundries, rminusdict[k], rdict[k])
-    cycles_padded = pad_matrix_to_match_tuples(cycles_padded.T, rminusdict[k+1], rdict[k+1]).T
+    cycles_padded = pad_matrix(boundries, rminusdict[k], rdict[k])
+    cycles_padded = pad_matrix(cycles_padded.T, rminusdict[k+1], rdict[k+1]).T
     boundries, R = qr(boundries)
 
     ZBlrminus = IntersectionOfSpaces(cycles, boundries)
 
 
+    #final computations 
     ZBalmostfinal = SumOfSpaces(ZBlminusr, ZBlrminus)
 
     ZBfinal = OrthComplement(ZBlr, ZBalmostfinal)
 
 
-    def pad_matrix_to_match_tuples(mat: np.ndarray, short_list: list, full_list: list) -> np.ndarray:
+    def pad_matrix(mat: np.ndarray, short_list: list, full_list: list) -> np.ndarray:
 
         assert len(mat) == len(short_list), "Matrix row count must match short_list length"
         padded_rows = []
