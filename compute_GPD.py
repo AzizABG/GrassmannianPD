@@ -33,6 +33,7 @@ def computeGPD(D, k, l, r, lminus, rminus):
     
 
     #ZB(l, r)
+    if ldict[k] == 0
 
     cycles = boundary_matrix(ldict[k], ldict[k-1])
     cycles = null_space(cycles)
