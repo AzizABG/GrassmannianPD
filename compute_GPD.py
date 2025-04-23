@@ -79,8 +79,15 @@ def computeGPD(D, k, l, r, lminus, rminus):
         ZBlrminus = IntersectionOfSpaces(cycles_padded, boundries_padded)
 
 
-    ZBalmostfinal = SumOfSpaces([ZBlminusr, ZBlrminus])
+    ZBalmostfinal = SumOfSpaces(np.stack([ZBlminusr, ZBlrminus], axis=0))
 
+    print(ZBlr)
+    print("here is ZBALMOSTNFINAL")
+    print(ZBalmostfinal)
+
+    if not ZBalmostfinal:
+        print("HELOOOOOO")
+        return ZBlr
     ZBfinal = OrthComplement(ZBlr, ZBalmostfinal)
     
 
