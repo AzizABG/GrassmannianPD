@@ -30,51 +30,56 @@ def computeGPD(D, k, l, r, lminus, rminus):
     rdict = vietoris_rips(D, r, k+1)
     rminusdict = vietoris_rips(D, rminus, k+1)
 
-    
+    if k+1 not in rdict:
+        return 0
 
     #ZB(l, r)
-    if ldict[k] == 0
-
-    cycles = boundary_matrix(ldict[k], ldict[k-1])
-    cycles = null_space(cycles)
-    cycles_padded = pad_matrix_to_match_tuples(cycles, ldict[k], rdict[k])
+    if k not in ldict or k-1 not in ldict:
+        ZBlr = np.zeros((len(rdict[k]), 1))
+    else:
+        cycles = boundary_matrix(ldict[k], ldict[k-1])
+        cycles = null_space(cycles)
+        cycles_padded = pad_matrix_to_match_tuples(cycles, ldict[k], rdict[k])
     
+        boundries = boundary_matrix(rdict[k+1], rdict[k])
+        boundries, R = qr(boundries)
 
-    boundries = boundary_matrix(rdict[k+1], rdict[k])
-    boundries, R = qr(boundries)
-
-    ZBlr = IntersectionOfSpaces(cycles_padded, boundries)
-    print("look here for ZBlr")
-    print(ZBlr)
+        ZBlr = IntersectionOfSpaces(cycles_padded, boundries)
+        print("look here for ZBlr")
+        print(ZBlr)
 
     #ZB(lminus, r)
+    if k not in lminusdict or k-1 not in lminusdict:
+        ZBlminusr = np.zeros((len(rdict[k]), 1))
+    else:
+        cycles = boundary_matrix(lminusdict[k], lminusdict[k-1])
+        cycles = null_space(cycles)
+        cycles_padded = pad_matrix_to_match_tuples(cycles, lminusdict[k], rdict[k])
+        
 
-    cycles = boundary_matrix(lminusdict[k], lminusdict[k-1])
-    cycles = null_space(cycles)
-    cycles_padded = pad_matrix_to_match_tuples(cycles, lminusdict[k], rdict[k])
-    
+        boundries = boundary_matrix(rdict[k+1], rdict[k])
+        boundries, R = qr(boundries)
 
-    boundries = boundary_matrix(rdict[k+1], rdict[k])
-    boundries, R = qr(boundries)
-
-    ZBlminusr = IntersectionOfSpaces(cycles_padded, boundries)
+        ZBlminusr = IntersectionOfSpaces(cycles_padded, boundries)
 
     #ZB(l, rminus)
+    if k not in ldict or k-1 not in ldict or k+1 not in rminusdict:
+        ZBlrminus = np.zeros((len(rdict[k]), 1))
+    else:
+        cycles = boundary_matrix(ldict[k], ldict[k-1])
+        cycles = null_space(cycles)
+        cycles_padded = pad_matrix_to_match_tuples(cycles, ldict[k], rdict[k])
+        
 
-    cycles = boundary_matrix(ldict[k], ldict[k-1])
-    cycles = null_space(cycles)
-    cycles_padded = pad_matrix_to_match_tuples(cycles, ldict[k], rdict[k])
-    
+        boundries = boundary_matrix(rminusdict[k+1], rminusdict[k])
+        boundries, R = qr(boundries)
+        boundries_padded = pad_matrix_to_match_tuples(boundries, rminusdict[k], rdict[k])
+        
 
-    boundries = boundary_matrix(rminusdict[k+1], rminusdict[k])
-    boundries, R = qr(boundries)
-    boundries_padded = pad_matrix_to_match_tuples(boundries, rminusdict[k], rdict[k])
-    
-
-    ZBlrminus = IntersectionOfSpaces(cycles_padded, boundries_padded)
+        ZBlrminus = IntersectionOfSpaces(cycles_padded, boundries_padded)
 
 
-    ZBalmostfinal = SumOfSpaces(ZBlminusr, ZBlrminus)
+    ZBalmostfinal = SumOfSpaces([ZBlminusr, ZBlrminus])
 
     ZBfinal = OrthComplement(ZBlr, ZBalmostfinal)
     
