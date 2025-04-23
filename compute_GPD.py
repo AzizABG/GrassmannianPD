@@ -12,8 +12,8 @@ def computeGPD(D, k, l, r):
     unique_dists = np.unique(upper_dists)
     
     # Find l-1 and r-1: the largest values strictly less than l and r
-    lminus = max(unique_dists[unique_dists < l], default=None)
-    rminus = max(unique_dists[unique_dists < r], default=None)
+    lminus = max(unique_dists[unique_dists < l], default=0)
+    rminus = max(unique_dists[unique_dists < r], default=0)
 
     def pad_matrix_to_match_tuples(mat: np.ndarray, short_list: list, full_list: list) -> np.ndarray:
 
@@ -33,7 +33,7 @@ def computeGPD(D, k, l, r):
 
         return np.array(padded_rows)
     
-
+    print(lminus)
     ldict = vietoris_rips(D, l, k+1)
     lminusdict = vietoris_rips(D, lminus, k+1)
     rdict = vietoris_rips(D, r, k+1)
@@ -94,7 +94,7 @@ def computeGPD(D, k, l, r):
     print("here is ZBALMOSTNFINAL")
     print(ZBalmostfinal)
 
-    if not ZBalmostfinal:
+    if ZBalmostfinal.size == 0:
         print("HELOOOOOO")
         return ZBlr
     ZBfinal = OrthComplement(ZBlr, ZBalmostfinal)
