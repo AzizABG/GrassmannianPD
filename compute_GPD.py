@@ -4,7 +4,16 @@ import numpy as np
 import scipy as sp
 from scipy.linalg import null_space, qr
 
-def computeGPD(D, k, l, r, lminus, rminus):
+def computeGPD(D, k, l, r):
+
+    upper_dists = D[np.triu_indices_from(D, k=1)]
+    
+    # Get the sorted unique distances
+    unique_dists = np.unique(upper_dists)
+    
+    # Find l-1 and r-1: the largest values strictly less than l and r
+    lminus = max(unique_dists[unique_dists < l], default=None)
+    rminus = max(unique_dists[unique_dists < r], default=None)
 
     def pad_matrix_to_match_tuples(mat: np.ndarray, short_list: list, full_list: list) -> np.ndarray:
 
@@ -108,7 +117,7 @@ def computeGPD_tester():
     lminus = 0
     rminus = 1
 
-    ZBfinal = computeGPD(D, k, l, r, lminus, rminus)
+    ZBfinal = computeGPD(D, k, l, r)
     print("Test Case 1 Output Shape:", ZBfinal.shape)
 
 computeGPD_tester()
